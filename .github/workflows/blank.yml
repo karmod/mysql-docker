@@ -10,9 +10,7 @@ on:
   pull_request:
     branches: [ master ]
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -22,6 +20,21 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    # Runs a single command using the runners shell
+    # check docker-compose file
+    - name: Check compose file
+      run: docker-compose config
+
+    # Build compose file
     - name: Build the stack
       run: docker-compose up -d
+    
+    #test adminer
+    - name: Test Adminer
+      run: docker run --network container:mysql-docker_adminer_1 appropriate/curl -s --retry 10 --retry-connrefused http://localhost:8080/
+
+    - name: Test database
+      run: |
+        sleep 10 
+        docker exec mysql-docker_db_1 mysqlcheck -uroot -pexample -A
+      shell: bash
+
