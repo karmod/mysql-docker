@@ -20,6 +20,10 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
+    #create api.env
+    - name: generate api.env
+      run: cp api.env_template api.env
+
     # check docker-compose file
     - name: Check compose file
       run: docker-compose config
@@ -27,14 +31,14 @@ jobs:
     # Build compose file
     - name: Build the stack
       run: docker-compose up -d
-    
+
     #test adminer
     - name: Test Adminer
       run: docker run --network container:mysql-docker_adminer_1 appropriate/curl -s --retry 10 --retry-connrefused http://localhost:8080/
 
     - name: Test database
       run: |
-        sleep 10 
+        sleep 10
         docker exec mysql-docker_db_1 mysqlcheck -uroot -pexample -A
       shell: bash
 
