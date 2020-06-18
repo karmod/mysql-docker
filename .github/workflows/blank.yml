@@ -38,7 +38,7 @@ jobs:
 
     - name: Test database
       run: |
-        sleep 10
+        sleep 20
         docker exec mysql-docker_db_1 mysqlcheck -uroot -pexample -A
       shell: bash
 
